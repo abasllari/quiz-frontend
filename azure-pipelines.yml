@@ -1,0 +1,25 @@
+trigger:
+- azure-dev-ops      #here I define the branch that will trigger the build in Azure DevOps Pipelines.
+
+variables:   #  needed in the continuation of the configuration        
+  quiz-frontend-image-name: '$(dockerId)/quiz-frontend:$(build.buildId)'
+  #  quiz-backend-image-name: '$(dockerId)/quiz-backend:$(build.buildId)'
+
+jobs:                # 2 jobs to be done
+- job: quiz-frontend      
+  steps:            
+  - script: docker login -u $(dockerId) -p $(password)
+    displayName: 'docker login'
+  - script: docker build -f ./quiz-frontend/Dockerfile -t $(quiz-frontend-image-name) ./quiz-frontend
+    displayName: 'docker build frontend'
+  - script: docker push $(quiz-frontend-image-name) 
+    displayName: 'docker push frontend'
+
+    #- job: quiz-backend        
+  #steps:
+          #- script: docker login -u $(dockerId) -p $(password)
+    #displayName: 'docker login'
+    #- script: docker build -f ./quiz-backend/Dockerfile -t $(quiz-backend-image-name) ./quiz-backend
+    #displayName: 'docker build webapp'
+    #- script: docker push $(quiz-backend-image-name) 
+    #   displayName: 'docker push webapp'
