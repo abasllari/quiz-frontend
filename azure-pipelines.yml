@@ -1,5 +1,5 @@
 trigger:
-- azure-dev-ops      #here I define the branch that will trigger the build in Azure DevOps Pipelines.
+- abasllari/quiz-frontend      #here I define the branch that will trigger the build in Azure DevOps Pipelines.
 
 variables:   #  needed in the continuation of the configuration        
   quiz-frontend-image-name: '$(dockerId)/quiz-frontend:$(build.buildId)'
