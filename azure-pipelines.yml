@@ -10,7 +10,7 @@ jobs:                # 2 jobs to be done
   steps:            
   - script: docker login -u $(dockerId) -p $(password)
     displayName: 'docker login'
-  - script: docker build -f ./quiz-frontend/Dockerfile -t $(quiz-frontend-image-name) ./
+  - script: docker build -f Dockerfile -t $(quiz-frontend-image-name) .
     displayName: 'docker build frontend'
   - script: docker push $(quiz-frontend-image-name) 
     displayName: 'docker push frontend'
