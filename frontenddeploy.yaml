@@ -7,14 +7,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend2
+      app: frontend
   template:
     metadata:
       labels:
-        app: frontend2
+        app: frontend
     spec:
       containers:
-      - name: frontend2
+      - name: frontend
         image: abasllari/frontdj:latest
         resources:
           requests:
@@ -30,10 +30,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend2
+  name: frontend
 spec:
   ports:
   - port: 80
   selector:
-    app: frontend2
+    app: frontend
    
