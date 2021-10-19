@@ -2,18 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  namespace: dj
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: frontend2
   template:
     metadata:
       labels:
-        app: frontend
+        app: frontend2
     spec:
       containers:
-      - name: frontend
+      - name: frontend2
         image: abasllari/frontdj:latest
         resources:
           requests:
@@ -29,10 +30,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: frontend2
 spec:
   ports:
   - port: 80
   selector:
-    app: frontend
+    app: frontend2
    
