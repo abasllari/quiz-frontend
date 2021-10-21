@@ -13,5 +13,5 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 COPY midpro.crt /etc/nginx/certs/midpro.crt
 COPY midpro.key /etc/nginx/certs/midpro.key
 COPY --from=build /usr/src/app/dist/quiz-frontend /usr/share/nginx/html
-EXPOSE 80 443
+EXPOSE 80 443 4200
 
