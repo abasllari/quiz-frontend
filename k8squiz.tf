@@ -12,8 +12,8 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "danielrg" {
-  name     = "danielrg"
+resource "azurerm_resource_group" "prodrg" {
+  name     = "prodrg"
   location = "westeurope"
 
   tags = {
@@ -21,10 +21,10 @@ resource "azurerm_resource_group" "danielrg" {
   }
 }
 
-resource "azurerm_kubernetes_cluster" "danielcl" {
-  name                = "danielcl"
-  location            = azurerm_resource_group.danielrg.location
-  resource_group_name = azurerm_resource_group.danielrg.name
+resource "azurerm_kubernetes_cluster" "dpro" {
+  name                = "dpro"
+  location            = azurerm_resource_group.prodrg.location
+  resource_group_name = azurerm_resource_group.prodrg.name
   dns_prefix          = "${random_pet.prefix.id}-k8s"
 
   default_node_pool {
@@ -40,8 +40,8 @@ resource "azurerm_kubernetes_cluster" "danielcl" {
     }
   }
   service_principal {
-    client_id     = "df395ac0-9b25-4322-97c9-538bd3ac364a"
-    client_secret = "afS9A2Ra4nFKaK7u.gorBemvvBRi66X2~p"
+    client_id     = "27e530d1-1e3e-4878-9042-0dc659fe6a4e"
+    client_secret = "NPsa0Xun9u3LDJaD.042origM~sNO_R~g9"
   }
 
   role_based_access_control {
@@ -54,26 +54,26 @@ resource "azurerm_kubernetes_cluster" "danielcl" {
 }
 
 provider "kubernetes" {
-  config_path = "/home/daniel/.kube/config"
+  config_path = "~/.kube/config"
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "/home/daniel/.kube/config"
+    config_path = "~/.kube/config"
   }
 }
 
-resource "kubernetes_namespace" "nm" {
+resource "kubernetes_namespace" "final" {
   metadata {
-    name = "nm"
+    name = "${random_pet.prefix.id}-nm"
   }
 }
 #Backend Deployments
 
 resource "kubernetes_deployment" "backend" {
   metadata {
-    name      = "quiz-backend"
-    namespace = "nm"
+    name      = "${random_pet.prefix.id}-backend"
+    namespace = "${random_pet.prefix.id}-nm"
   }
   spec {
     replicas = 2
@@ -105,8 +105,8 @@ resource "kubernetes_deployment" "backend" {
 
 resource "kubernetes_service" "backendservice" {
   metadata {
-    name = "quiz-backend"
-    namespace = "nm"
+    name = "${random_pet.prefix.id}-bcksrv"
+    namespace = "${random_pet.prefix.id}-nm"
   }
   spec {
     type = "ClusterIP"
@@ -124,7 +124,7 @@ resource "kubernetes_service" "backendservice" {
 resource "kubernetes_deployment" "frontend" {
   metadata {
     name      = "frontend"
-    namespace = "nm"
+    namespace = "${random_pet.prefix.id}-nm"
   }
   spec {
     replicas = 2
@@ -157,7 +157,7 @@ resource "kubernetes_deployment" "frontend" {
 resource "kubernetes_service" "frontend" {
   metadata {
     name = "frontend"
-    namespace = "nm"
+    namespace = "${random_pet.prefix.id}-nm"
   }
   spec {
     type = "ClusterIP"
@@ -174,10 +174,10 @@ resource "kubernetes_service" "frontend" {
 # Ingress
 
 resource "helm_release" "ingress_nginx" {
-  name       = "ingress-nginx"
+  name       = "${random_pet.prefix.id}-aks"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
-  namespace  = "nm"
+  namespace  = "${random_pet.prefix.id}-nm"
   timeout    = 300
 
 }
@@ -188,8 +188,8 @@ resource "kubernetes_ingress" "ingress-front-back" {
     labels                = {
       app = "ingress-nginx"
     }
-    name = "ingress-front-back"
-    namespace = "nm"
+    name = "${random_pet.prefix.id}-frt"
+    namespace = "${random_pet.prefix.id}-nm"
     annotations = {
       "kubernetes.io/ingress.class": "nginx"
         "nginx.ingress.kubernetes.io/ssl-redirect": "false"
@@ -203,11 +203,11 @@ resource "kubernetes_ingress" "ingress-front-back" {
       http {
         path {
           backend {
-            service_name = "quiz-backend"
+            service_name = "${random_pet.prefix.id}-bcksrv"
             service_port = 8080
           }
 
-          path = "/api/quiz/*"
+          path = "/api/quiz/?(.*)"
         }
 
         path {
