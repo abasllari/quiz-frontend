@@ -186,12 +186,12 @@ resource "helm_release" "ingress_nginx" {
 resource "kubernetes_ingress" "ingress-front-back" {
   metadata {
     labels                = {
-      app = "ingress-nginx"
+      app = "${random_pet.prefix.id}-aks"
     }
     name = "${random_pet.prefix.id}-frt"
     namespace = "${random_pet.prefix.id}-nm"
     annotations = {
-      "kubernetes.io/ingress.class": "nginx"
+      "kubernetes.io/ingress.class": "${random_pet.prefix.id}-aks"
         "nginx.ingress.kubernetes.io/ssl-redirect": "false"
         "nginx.ingress.kubernetes.io/use-regex": "true"
         "nginx.ingress.kubernetes.io/rewrite-target": "/$1"
