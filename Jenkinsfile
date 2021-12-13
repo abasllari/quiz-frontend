@@ -3,10 +3,18 @@ pipeline {
     dockerfile true
   }
   stages {
-    stage( 'Example' ) {
+    stage( "build" ) {
       steps {
-        echo ' hellooo '
-        sh 'echo myvar'
+        sh """
+          docker build -t frontw .
+        """
+      }
+    }
+    stage("run") {
+      steps {
+        sh """
+          docker run -d -p 80:80 frontw
+        """
       }
     }
   }
