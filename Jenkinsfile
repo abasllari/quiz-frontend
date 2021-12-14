@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'python --version'
+                sh 'docker login -u abasllari -p 0702618983Da@'
+                sh 'docker build -f Dockerfile -t abasllari/myfronttag .'
+                sh 'docker push abasllari/myfronttag'
             }
         }
     }
