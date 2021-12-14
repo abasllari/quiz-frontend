@@ -1,19 +1,10 @@
 pipeline {
-  agent { label "linux"  }
-  stages {
-    stage( "build" ) {
-      steps {
-        sh """
-          docker build -t frontw .
-        """
-      }
+    agent { docker { image 'python:3.10.1-alpine' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'python --version'
+            }
+        }
     }
-    stage("run") {
-      steps {
-        sh """
-          docker run -d -p 80:80 frontw
-        """
-      }
-    }
-  }
 }
