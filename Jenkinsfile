@@ -7,6 +7,8 @@ pipeline {
                 sh 'docker build -f Dockerfile -t abasllari/myfronttag .'
                 sh 'docker push abasllari/myfronttag'
             }
-        }
+         }
+        stage('deploy')
+        echo "new sategssssss"
     }
 }
